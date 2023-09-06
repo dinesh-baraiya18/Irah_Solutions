@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { InputLabel, FormControl, Input, Button } from "@mui/material";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+const dbUrl = "https://irahsolution-923b5-default-rtdb.firebaseio.com";
 
 const Form = () => {
   const [formData, setFormData] = useState({
@@ -9,16 +13,67 @@ const Form = () => {
     note: "",
   });
 
-  console.log(formData);
+  const [errors, setErrors] = useState({});
 
-  // Form data input chnage
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const validationErrors = validateForm(formData);
+    if (Object.keys(validationErrors).length === 0) {
+      setErrors({});
+
+      try {
+        await axios.post(`${dbUrl}/userdata.json`, formData);
+        toast.success("Form submitted successfully!", {
+          autoClose: 2000,
+        });
+        setFormData({ name: "", email: "", phone: "", note: "" });
+      } catch (error) {
+        console.log(error);
+        toast.error("Failed to submit the form. Please try again later.");
+      }
+    } else {
+      setErrors(validationErrors);
+    }
+  };
+
   const inputFormData = (e) => {
     const { value, name } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const validateForm = (data) => {
+    const errors = {};
+
+    if (!data.name.trim()) {
+      errors.name = "Name is required";
+    }
+
+    if (!data.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!isValidEmail(data.email.trim())) {
+      errors.email = "Invalid email address";
+    }
+
+    if (!data.phone.trim()) {
+      errors.phone = "Phone is required";
+    } else if (!isValidPhone(data.phone.trim())) {
+      errors.phone = "Invalid phone number";
+    }
+    return errors;
+  };
+
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isValidPhone = (phone) => {
+    const phoneRegex = /^[0-9]{10}$/;
+    return phoneRegex.test(phone);
+  };
+
   return (
-    <form action="">
+    <form onSubmit={handleSubmit} method="POST">
       <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
         <InputLabel htmlFor="name-input">Name</InputLabel>
         <Input
@@ -28,6 +83,11 @@ const Form = () => {
           value={formData.name}
           onChange={inputFormData}
         />
+        {errors.name && (
+          <span className="error" style={{ color: "red" }}>
+            {errors.name}
+          </span>
+        )}
       </FormControl>
       <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
         <InputLabel htmlFor="phone-input">Phone</InputLabel>
@@ -38,6 +98,11 @@ const Form = () => {
           value={formData.phone}
           onChange={inputFormData}
         />
+        {errors.phone && (
+          <span className="error" style={{ color: "red" }}>
+            {errors.phone}
+          </span>
+        )}
       </FormControl>
       <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
         <InputLabel htmlFor="email-input">Email</InputLabel>
@@ -48,6 +113,11 @@ const Form = () => {
           value={formData.email}
           onChange={inputFormData}
         />
+        {errors.email && (
+          <span className="error" style={{ color: "red" }}>
+            {errors.email}
+          </span>
+        )}
       </FormControl>
       <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
         <InputLabel htmlFor="note-input">Note</InputLabel>

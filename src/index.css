@@ -137,6 +137,10 @@ button {
   background: #fff !important;
 }
 
+td>a:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 1200px) {
   :root {
     --h1: normal 700 38px/1.2 var(--first-font);

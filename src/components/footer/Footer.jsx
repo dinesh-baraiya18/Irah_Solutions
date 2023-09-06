@@ -60,7 +60,10 @@ const Footer = () => {
                     </a>
                   </li>
                   <li>
-                    <a href="#" target="_blank">
+                    <a
+                      href="https://instagram.com/irah.solution?igshid=MzRlODBiNWFlZA=="
+                      target="_blank"
+                    >
                       <AiOutlineInstagram />
                     </a>
                   </li>
@@ -70,7 +73,10 @@ const Footer = () => {
                     </a>
                   </li>
                   <li>
-                    <a href="#" target="_blank">
+                    <a
+                      href="https://www.linkedin.com/company/irah-solution/"
+                      target="_blank"
+                    >
                       <FaLinkedinIn />
                     </a>
                   </li>
